@@ -1,6 +1,7 @@
 package io.github.biezhi.elves.spider;
 
-import io.github.biezhi.elves.parser.Parser;
+import io.github.biezhi.elves.request.Request;
+import io.github.biezhi.elves.response.Response;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,24 +15,25 @@ import java.util.List;
  */
 @Data
 @NoArgsConstructor
-public class Spider {
+public abstract class Spider {
 
-    private String name;
-    private List<String> startUrls = new ArrayList<>();
-    private Parser parser;
+    protected String name;
+    protected List<String> startUrls = new ArrayList<>();
+    protected List<Request> requests;
 
     public Spider(String name) {
         this.name = name;
     }
 
-    public Spider startUrls(String...urls){
+    public Spider startUrls(String... urls) {
         this.startUrls.addAll(Arrays.asList(urls));
         return this;
     }
 
-    public Spider parser(Parser parser){
-        this.parser = parser;
+    public Spider onStart(){
         return this;
     }
+
+    public abstract void parse(Response response);
 
 }

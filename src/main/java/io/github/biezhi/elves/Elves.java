@@ -1,12 +1,13 @@
 package io.github.biezhi.elves;
 
 import io.github.biezhi.elves.config.Config;
-import io.github.biezhi.elves.config.SampleConfig;
 import io.github.biezhi.elves.spider.Spider;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
+ * Elves
+ *
  * @author biezhi
  * @date 2018/1/11
  */
@@ -18,7 +19,7 @@ public class Elves {
     private Config config;
 
     public static Elves me(Spider spider) {
-        return me(spider, new SampleConfig());
+        return me(spider, Config.me());
     }
 
     public static Elves me(Spider spider, Config config) {
@@ -29,8 +30,8 @@ public class Elves {
     }
 
     public void start() {
-        log.info("Spider [{}] starting", spider.getName());
-        log.info("Spider [{}] config [{}]", config);
+        log.info("Spider [{}] 启动...", spider.getName());
+        log.info("Spider [{}] 配置 [{}]", spider.getName(), config);
     }
 
 }

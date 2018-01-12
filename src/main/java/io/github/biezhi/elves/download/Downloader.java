@@ -26,7 +26,7 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
-        log.info("开始下载: {}", request.getUrl());
+        log.debug("开始请求URL: {}", request.getUrl());
 
         io.github.biezhi.request.Request httpReq = null;
         if ("get".equalsIgnoreCase(request.method())) {
@@ -41,7 +41,7 @@ public class Downloader implements Runnable {
                 .readTimeout(request.getSpider().getConfig().timeout())
                 .stream();
 
-        log.info("下载完成: {}", request.getUrl());
+        log.debug("[{}] 下载完毕", request.getUrl());
         Response response = new Response(request, result);
         scheduler.addResponse(response);
     }

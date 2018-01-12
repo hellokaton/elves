@@ -8,9 +8,7 @@ import io.github.biezhi.elves.request.Parser;
 import io.github.biezhi.elves.request.Request;
 import io.github.biezhi.elves.response.Response;
 import io.github.biezhi.elves.response.Result;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +19,6 @@ import java.util.List;
  * @date 2018/1/11
  */
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class Spider {
 
     protected String name;
@@ -29,6 +26,10 @@ public abstract class Spider {
     protected List<String>   startUrls = new ArrayList<>();
     protected List<Pipeline> pipelines = new ArrayList<>();
     protected List<Request>  requests  = new ArrayList<>();
+
+    public Spider() {
+        this("未命名爬虫");
+    }
 
     public Spider(String name) {
         this.name = name;
@@ -46,8 +47,7 @@ public abstract class Spider {
      * @param config
      * @return
      */
-    public Spider onStart(Config config) {
-        return this;
+    public void onStart(Config config) {
     }
 
     protected <T> Spider addPipeline(Pipeline<T> pipeline) {

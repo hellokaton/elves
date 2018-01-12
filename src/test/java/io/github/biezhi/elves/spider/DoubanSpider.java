@@ -32,7 +32,7 @@ public class DoubanSpider extends Spider {
     }
 
     @Override
-    public Spider onStart(Config config) {
+    public void onStart(Config config) {
 
         this.addPipeline((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
 
@@ -40,7 +40,6 @@ public class DoubanSpider extends Spider {
             request.header("Refer", "https://movie.douban.com");
             request.cookie("bid", randomBid());
         });
-        return this;
     }
 
     @Override
@@ -62,7 +61,6 @@ public class DoubanSpider extends Spider {
             Request<String> nextReq     = DoubanSpider.this.makeRequest(nextPageUrl, this::parse);
             result.addRequest(nextReq);
         }
-
         return result;
     }
 

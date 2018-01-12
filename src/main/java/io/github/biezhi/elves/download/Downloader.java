@@ -26,8 +26,7 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
-        log.debug("开始请求URL: {}", request.getUrl());
-
+        log.debug("[{}] 开始请求", request.getUrl());
         io.github.biezhi.request.Request httpReq = null;
         if ("get".equalsIgnoreCase(request.method())) {
             httpReq = io.github.biezhi.request.Request.get(request.getUrl());

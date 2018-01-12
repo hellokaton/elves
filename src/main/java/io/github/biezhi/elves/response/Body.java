@@ -5,10 +5,9 @@ import org.jsoup.select.Elements;
 import us.codecraft.xsoup.XElements;
 import us.codecraft.xsoup.Xsoup;
 
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedReader;
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.io.InputStreamReader;
 
 /**
  * @author biezhi
@@ -17,27 +16,29 @@ import java.nio.charset.StandardCharsets;
 public class Body {
 
     private final InputStream inputStream;
-    private final String      bodyString;
+    private final String      charset;
+    private       String      bodyString;
 
-    public Body(InputStream inputStream, Charset charset) {
+    public Body(InputStream inputStream, String charset) {
         this.inputStream = inputStream;
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        int                   nRead;
-        byte[]                data   = new byte[1024];
-        try {
-            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
-                buffer.write(data, 0, nRead);
-            }
-            buffer.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        byte[] byteArray = buffer.toByteArray();
-        this.bodyString = new String(byteArray, charset);
+        this.charset = charset;
     }
 
     @Override
     public String toString() {
+        if (null == this.bodyString) {
+            StringBuilder html = new StringBuilder(100);
+            try {
+                BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, charset));
+                String         temp;
+                while ((temp = br.readLine()) != null) {
+                    html.append(temp).append("\n");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            this.bodyString = html.toString();
+        }
         return this.bodyString;
     }
 
@@ -46,11 +47,11 @@ public class Body {
     }
 
     public Elements css(String css) {
-        return Jsoup.parse(this.bodyString).select(css);
+        return Jsoup.parse(this.toString()).select(css);
     }
 
     public XElements xpath(String xpath) {
-        return Xsoup.compile(xpath).evaluate(Jsoup.parse(this.bodyString));
+        return Xsoup.compile(xpath).evaluate(Jsoup.parse(this.toString()));
     }
 
 }

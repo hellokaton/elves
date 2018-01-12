@@ -1,6 +1,7 @@
 package io.github.biezhi.elves.response;
 
 import io.github.biezhi.elves.request.Request;
+import io.github.biezhi.elves.utils.ElvesUtils;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,13 +23,15 @@ public class Result<T> {
         this.item = item;
     }
 
-    public Result<T> addRequest(Request<T> request){
+    public Result addRequest(Request request){
         this.requests.add(request);
         return this;
     }
 
-    public Result<T> addRequests(List<Request<T>> requests){
-        this.requests.addAll(requests);
+    public Result addRequests(List<Request> requests){
+        if(!ElvesUtils.isEmpty(requests)){
+            this.requests.addAll(requests);
+        }
         return this;
     }
 

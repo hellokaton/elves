@@ -23,7 +23,7 @@ public class Request<T> {
     private Map<String, String> headers = new HashMap<>();
     private Map<String, String> cookies = new HashMap<>();
     private String contentType = "text/html; charset=UTF-8";
-    private Charset charset = StandardCharsets.UTF_8;
+    private String charset = "UTF-8";
     private Parser<T> parser;
 
     public Request(Spider spider, String url, Parser<T> parser) {
@@ -64,11 +64,11 @@ public class Request<T> {
         return this;
     }
 
-    public Charset charset() {
+    public String charset() {
         return charset;
     }
 
-    public Request charset(Charset charset) {
+    public Request charset(String charset) {
         this.charset = charset;
         return this;
     }

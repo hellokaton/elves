@@ -48,7 +48,7 @@ public class DoubanSpider extends Spider {
         Elements       elements = response.body().css("#content table .pl2 a");
         log.info("elements size: {}", elements.size());
 
-        List<Request<String>> requests = elements.stream()
+        List<Request> requests = elements.stream()
                 .map(element -> element.attr("href"))
                 .map(href -> DoubanSpider.this.makeRequest(href, new DetailParser()))
                 .collect(Collectors.toList());

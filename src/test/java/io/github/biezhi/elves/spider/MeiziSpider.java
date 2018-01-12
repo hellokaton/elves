@@ -12,8 +12,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,23 +38,26 @@ public class MeiziSpider extends Spider {
     @Override
     public void onStart(Config config) {
         this.addPipeline((Pipeline<List<String>>) (item, request) -> {
-            item.parallelStream().forEach(imgUrl -> {
+            item.forEach(imgUrl -> {
                 log.info("开始下载: {}", imgUrl);
                 io.github.biezhi.request.Request.get(imgUrl)
                         .header("Referer", request.getUrl())
                         .header("User-Agent", UserAgent.CHROME_FOR_MAC)
-                        .connectTimeout(config.timeout())
-                        .readTimeout(config.timeout())
+                        .connectTimeout(20_000)
+                        .readTimeout(20_000)
                         .receive(new File(storageDir, System.currentTimeMillis() + ".jpg"));
             });
 
             log.info("[{}] 图片下载 OJ8K.", request.getUrl());
         });
 
-        this.requests.forEach(request -> {
-            request.contentType("text/html; charset=gb2312");
-            request.charset(Charset.forName("GBK"));
-        });
+        this.requests.forEach(this::resetRequest);
+    }
+
+    private Request resetRequest(Request request){
+        request.contentType("text/html; charset=gb2312");
+        request.charset("gb2312");
+        return request;
     }
 
     @Override
@@ -65,9 +66,10 @@ public class MeiziSpider extends Spider {
         Elements elements = response.body().css("#maincontent > div.inWrap > ul > li:nth-child(1) > div > div > a");
         log.info("elements size: {}", elements.size());
 
-        List<Request<List<String>>> requests = elements.stream()
+        List<Request> requests = elements.stream()
                 .map(element -> element.attr("href"))
                 .map(href -> MeiziSpider.this.makeRequest(href, new PictureParser()))
+                .map(this::resetRequest)
                 .collect(Collectors.toList());
         result.addRequests(requests);
 
@@ -76,7 +78,7 @@ public class MeiziSpider extends Spider {
         if (nextEl.isPresent()) {
             String          nextPageUrl = "http://www.meizitu.com/a/" + nextEl.get().attr("href");
             Request<String> nextReq     = MeiziSpider.this.makeRequest(nextPageUrl, this::parse);
-            result.addRequest(nextReq);
+            result.addRequest(this.resetRequest(nextReq));
         }
         return result;
     }

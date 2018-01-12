@@ -33,24 +33,24 @@ public class DoubanSpider extends Spider {
 
     @Override
     public void onStart(Config config) {
-
         this.addPipeline((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
+        this.requests.forEach(this::resetRequest);
+    }
 
-        this.requests.forEach(request -> {
-            request.header("Refer", "https://movie.douban.com");
-            request.cookie("bid", randomBid());
-        });
+    private Request resetRequest(Request request) {
+        request.header("Refer", "https://movie.douban.com");
+        request.cookie("bid", randomBid());
+        return request;
     }
 
     @Override
     public Result<String> parse(Response response) {
         Result<String> result   = new Result<>();
         Elements       elements = response.body().css("#content table .pl2 a");
-        log.info("elements size: {}", elements.size());
-
         List<Request> requests = elements.stream()
                 .map(element -> element.attr("href"))
                 .map(href -> DoubanSpider.this.makeRequest(href, new DetailParser()))
+                .map(this::resetRequest)
                 .collect(Collectors.toList());
         result.addRequests(requests);
 

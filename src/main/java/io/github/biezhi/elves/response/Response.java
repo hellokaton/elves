@@ -1,6 +1,9 @@
 package io.github.biezhi.elves.response;
 
 import io.github.biezhi.elves.request.Request;
+import lombok.Getter;
+
+import java.io.InputStream;
 
 /**
  * @author biezhi
@@ -8,19 +11,16 @@ import io.github.biezhi.elves.request.Request;
  */
 public class Response {
 
-    private Request request;
-    private String body;
+    @Getter
+    private Request     request;
+    private Body body;
 
-    public Response(Request request) {
+    public Response(Request request, InputStream inputStream) {
         this.request = request;
+        this.body = new Body(inputStream);
     }
 
-    public Response body(String body) {
-        this.body = body;
-        return this;
-    }
-
-    public String body() {
+    public Body body() {
         return body;
     }
 

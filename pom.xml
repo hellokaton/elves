@@ -20,6 +20,11 @@
             <version>1.10.3</version>
         </dependency>
         <dependency>
+            <groupId>us.codecraft</groupId>
+            <artifactId>xsoup</artifactId>
+            <version>0.3.1</version>
+        </dependency>
+        <dependency>
             <groupId>io.github.biezhi</groupId>
             <artifactId>oh-my-request</artifactId>
             <version>0.0.1</version>

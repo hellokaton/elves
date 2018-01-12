@@ -2,7 +2,11 @@ package io.github.biezhi.elves;
 
 import io.github.biezhi.elves.config.Config;
 import io.github.biezhi.elves.download.Downloader;
+import io.github.biezhi.elves.pipeline.Pipeline;
+import io.github.biezhi.elves.request.Parser;
 import io.github.biezhi.elves.request.Request;
+import io.github.biezhi.elves.response.Response;
+import io.github.biezhi.elves.response.Result;
 import io.github.biezhi.elves.scheduler.Scheduler;
 import io.github.biezhi.elves.spider.Spider;
 import io.github.biezhi.elves.utils.ElvesUtils;
@@ -21,7 +25,7 @@ import java.util.concurrent.*;
 @Slf4j
 public class ElvesEngine {
 
-    private List<Spider>    spiders;
+    private List<Spider> spiders;
     private Config          config;
     private boolean         isRunning;
     private Scheduler       scheduler;
@@ -52,7 +56,7 @@ public class ElvesEngine {
             log.info("Spider [{}] 配置 [{}]", spider.getName(), conf);
             spider.setConfig(conf);
             spider.getStartUrls().stream()
-                    .map(url -> this.makeRequest(spider, url))
+                    .map(url -> spider.makeRequest(url, spider::parse))
                     .forEach(request -> {
                         spider.getRequests().add(request);
                         scheduler.addRequest(request);
@@ -65,32 +69,44 @@ public class ElvesEngine {
         downloadTread.setDaemon(true);
         downloadTread.setName("download-thread");
         downloadTread.start();
-        // 后台消费
+        // 消费
         this.complete();
     }
 
     private void complete() {
         while (isRunning) {
-            try {
-                TimeUnit.MILLISECONDS.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (!scheduler.hasResponse()) {
+                ElvesUtils.sleep(100);
+                continue;
+            }
+            Response response = scheduler.nextResponse();
+            Parser   parser   = response.getRequest().getParser();
+            if (null != parser) {
+                Result<?>     result   = parser.parse(response);
+                List<Request> requests = result.getRequests();
+                if (!ElvesUtils.isEmpty(requests)) {
+                    requests.forEach(scheduler::addRequest);
+                }
+                if (null != result.getItem()) {
+                    List<Pipeline> pipelines = response.getRequest().getSpider().getPipelines();
+                    pipelines.forEach(pipeline -> pipeline.process(result.getItem(), response.getRequest()));
+                }
             }
         }
     }
 
     private Runnable runDownload() {
         return () -> {
-            while (isRunning && scheduler.hasRequest()) {
+            while (isRunning) {
+                if (!scheduler.hasRequest()) {
+                    ElvesUtils.sleep(100);
+                    continue;
+                }
                 Request request = scheduler.nextRequest();
-                executorService.submit(new Downloader(request));
+                executorService.submit(new Downloader(scheduler, request));
                 ElvesUtils.sleep(request.getSpider().getConfig().delay());
             }
         };
-    }
-
-    private Request makeRequest(Spider spider, String url) {
-        return new Request(spider, url);
     }
 
 }

@@ -2,13 +2,16 @@ package io.github.biezhi.elves.spider;
 
 import io.github.biezhi.elves.config.Config;
 import io.github.biezhi.elves.pipeline.Pipeline;
+import io.github.biezhi.elves.request.Parser;
+import io.github.biezhi.elves.request.Request;
 import io.github.biezhi.elves.response.Response;
+import io.github.biezhi.elves.response.Result;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * @author biezhi
@@ -30,22 +33,50 @@ public class DoubanSpider extends Spider {
 
     @Override
     public Spider started(Config config) {
+//        config.delay(5000);
+
+        this.pipelines.add((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
+
         this.requests.forEach(request -> {
             request.header("Refer", "https://movie.douban.com");
             request.cookie("bid", randomBid());
+            request.setParser(this::parse);
         });
-        config.delay(5000);
-//        this.addPipeline((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
+//        this.addPipeline((item, request) -> item.forEach(s -> log.info("保存到文件: {}", s)));
         return this;
     }
 
     @Override
-    public String parse(Response response) {
-        Document document = Jsoup.parse(response.body());
-        Elements elements   = document.select("#content table .pl2 a");
+    public Result<String> parse(Response response) {
+        Result<String> result   = new Result<>();
+        Elements       elements = response.body().css("#content table .pl2 a");
         log.info("elements size: {}", elements.size());
-        elements.forEach(element -> log.info("Title [{}]", element.text()));
-        return response.body();
+
+        List<Request<String>> requests = elements.stream()
+                .map(element -> {
+                    Request<String> req = DoubanSpider.this.makeRequest(element.attr("href"), new DetailParser());
+                    return req;
+                })
+                .collect(Collectors.toList());
+        result.addRequests(requests);
+
+        Elements nextEl = response.body().css("#content > div > div.article > div.paginator > span.next > a");
+        if (null != nextEl && nextEl.size() > 0) {
+            String          nextPageUrl = nextEl.get(0).attr("href");
+            Request<String> nextReq     = DoubanSpider.this.makeRequest(nextPageUrl, this::parse);
+            result.addRequest(nextReq);
+        }
+
+        return result;
+    }
+
+    static class DetailParser implements Parser<String> {
+        @Override
+        public Result<String> parse(Response response) {
+            Elements elements = response.body().css("h1 span[property='v:itemreviewed']");
+            String   text     = elements.get(0).text();
+            return new Result<>(text);
+        }
     }
 
     private String randomBid() {

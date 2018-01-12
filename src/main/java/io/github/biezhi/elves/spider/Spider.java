@@ -2,8 +2,10 @@ package io.github.biezhi.elves.spider;
 
 import io.github.biezhi.elves.config.Config;
 import io.github.biezhi.elves.pipeline.Pipeline;
+import io.github.biezhi.elves.request.Parser;
 import io.github.biezhi.elves.request.Request;
 import io.github.biezhi.elves.response.Response;
+import io.github.biezhi.elves.response.Result;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -38,11 +40,11 @@ public abstract class Spider {
         return this;
     }
 
-    public abstract <T> T parse(Response response);
-
-    public Spider addPipeline(Pipeline pipeline) {
-        this.pipelines.add(pipeline);
-        return this;
+    public <T> Request<T> makeRequest(String url, Parser<T> parser) {
+        Request<T> request = new Request(this, url, parser);
+        return request;
     }
+
+    public abstract <T> Result<T> parse(Response response);
 
 }

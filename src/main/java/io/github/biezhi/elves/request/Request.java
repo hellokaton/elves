@@ -7,21 +7,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Request
+ *
  * @author biezhi
  * @date 2018/1/11
  */
 @Getter
-public class Request {
+public class Request<T> {
 
     private Spider spider;
     private String url;
     private String              method  = "GET";
     private Map<String, String> headers = new HashMap<>();
     private Map<String, String> cookies = new HashMap<>();
+    private Parser<T> parser;
 
-    public Request(Spider spider, String url) {
+    public Request(Spider spider, String url, Parser<T> parser) {
         this.spider = spider;
         this.url = url;
+        this.parser = parser;
         this.header("User-Agent", spider.getConfig().userAgent());
     }
 
@@ -41,6 +45,10 @@ public class Request {
 
     public String cookie(String key) {
         return this.cookies.get(key);
+    }
+
+    public void setParser(Parser<T> parser) {
+        this.parser = parser;
     }
 
     public Request method(String method) {

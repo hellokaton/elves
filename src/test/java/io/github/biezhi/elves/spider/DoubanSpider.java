@@ -32,9 +32,9 @@ public class DoubanSpider extends Spider {
     }
 
     @Override
-    public Spider started(Config config) {
+    public Spider onStart(Config config) {
 
-        this.pipelines.add((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
+        this.addPipeline((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
 
         this.requests.forEach(request -> {
             request.header("Refer", "https://movie.douban.com");

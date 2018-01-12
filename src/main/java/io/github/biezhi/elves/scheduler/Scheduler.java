@@ -4,6 +4,7 @@ import io.github.biezhi.elves.request.Request;
 import io.github.biezhi.elves.response.Response;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -57,6 +58,10 @@ public class Scheduler {
             log.error("从调度器获取 Response 出错", e);
             return null;
         }
+    }
+
+    public void addRequests(List<Request> requests) {
+        requests.forEach(this::addRequest);
     }
 
 }

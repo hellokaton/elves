@@ -1,11 +1,14 @@
 package io.github.biezhi.elves.spider;
 
 import io.github.biezhi.elves.config.Config;
+import io.github.biezhi.elves.event.ElvesEvent;
+import io.github.biezhi.elves.event.EventManager;
 import io.github.biezhi.elves.pipeline.Pipeline;
 import io.github.biezhi.elves.request.Parser;
 import io.github.biezhi.elves.request.Request;
 import io.github.biezhi.elves.response.Response;
 import io.github.biezhi.elves.response.Result;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -18,7 +21,7 @@ import java.util.List;
  * @date 2018/1/11
  */
 @Data
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class Spider {
 
     protected String name;
@@ -29,6 +32,7 @@ public abstract class Spider {
 
     public Spider(String name) {
         this.name = name;
+        EventManager.registerEvent(ElvesEvent.SPIDER_STARTED, this::onStart);
     }
 
     public Spider startUrls(String... urls) {
@@ -36,20 +40,36 @@ public abstract class Spider {
         return this;
     }
 
-    public Spider started(Config config) {
+    /**
+     * 爬虫启动前执行
+     *
+     * @param config
+     * @return
+     */
+    public Spider onStart(Config config) {
         return this;
     }
 
+    protected <T> Spider addPipeline(Pipeline<T> pipeline) {
+        this.pipelines.add(pipeline);
+        return this;
+    }
+
+    /**
+     * 构建一个Request
+     *
+     * @param url
+     * @param <T>
+     * @return
+     */
     public <T> Request<T> makeRequest(String url) {
-        Request<T> request = new Request(this, url, this::parse);
-        return request;
+        return makeRequest(url, this::parse);
     }
 
     public <T> Request<T> makeRequest(String url, Parser<T> parser) {
-        Request<T> request = new Request(this, url, parser);
-        return request;
+        return new Request(this, url, parser);
     }
 
-    public abstract <T> Result<T> parse(Response response);
+    protected abstract <T> Result<T> parse(Response response);
 
 }

@@ -2,6 +2,8 @@ package io.github.biezhi.elves;
 
 import io.github.biezhi.elves.config.Config;
 import io.github.biezhi.elves.download.Downloader;
+import io.github.biezhi.elves.event.ElvesEvent;
+import io.github.biezhi.elves.event.EventManager;
 import io.github.biezhi.elves.pipeline.Pipeline;
 import io.github.biezhi.elves.request.Parser;
 import io.github.biezhi.elves.request.Request;
@@ -15,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 /**
  * Elves Engine
@@ -25,7 +28,7 @@ import java.util.concurrent.*;
 @Slf4j
 public class ElvesEngine {
 
-    private List<Spider> spiders;
+    private List<Spider>    spiders;
     private Config          config;
     private boolean         isRunning;
     private Scheduler       scheduler;
@@ -48,6 +51,8 @@ public class ElvesEngine {
 
         isRunning = true;
         // 全局启动事件
+        EventManager.fireEvent(ElvesEvent.GLOBAL_STARTED, config);
+
         spiders.forEach(spider -> {
 
             Config conf = config.clone();
@@ -55,13 +60,15 @@ public class ElvesEngine {
             log.info("Spider [{}] 启动...", spider.getName());
             log.info("Spider [{}] 配置 [{}]", spider.getName(), conf);
             spider.setConfig(conf);
-            spider.getStartUrls().stream()
-                    .map(spider::makeRequest)
-                    .forEach(request -> {
-                        spider.getRequests().add(request);
-                        scheduler.addRequest(request);
-                    });
-            spider.started(conf);
+
+            List<Request> requests = spider.getStartUrls().stream()
+                    .map(spider::makeRequest).collect(Collectors.toList());
+
+            spider.getRequests().addAll(requests);
+            scheduler.addRequests(requests);
+
+            EventManager.fireEvent(ElvesEvent.SPIDER_STARTED, conf);
+
         });
 
         // 后台生产

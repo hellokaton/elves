@@ -5,4 +5,8 @@ package io.github.biezhi.elves.event;
  * @date 2018/1/11
  */
 public enum ElvesEvent {
+
+    GLOBAL_STARTED,
+    SPIDER_STARTED
+
 }

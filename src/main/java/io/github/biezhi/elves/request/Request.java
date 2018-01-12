@@ -3,8 +3,8 @@ package io.github.biezhi.elves.request;
 import io.github.biezhi.elves.spider.Spider;
 import lombok.Getter;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author biezhi
@@ -15,12 +15,14 @@ public class Request {
 
     private Spider spider;
     private String url;
-    private Map<String, String> headers = new ConcurrentHashMap<>();
-    private Map<String, String> cookies = new ConcurrentHashMap<>();
+    private String              method  = "GET";
+    private Map<String, String> headers = new HashMap<>();
+    private Map<String, String> cookies = new HashMap<>();
 
     public Request(Spider spider, String url) {
         this.spider = spider;
         this.url = url;
+        this.header("User-Agent", spider.getConfig().userAgent());
     }
 
     public Request header(String key, String value) {
@@ -41,4 +43,12 @@ public class Request {
         return this.cookies.get(key);
     }
 
+    public Request method(String method) {
+        this.method = method;
+        return this;
+    }
+
+    public String method() {
+        return this.method;
+    }
 }

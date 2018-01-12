@@ -1,8 +1,12 @@
 package io.github.biezhi.elves.spider;
 
+import io.github.biezhi.elves.config.Config;
 import io.github.biezhi.elves.pipeline.Pipeline;
 import io.github.biezhi.elves.response.Response;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
 import java.util.Random;
 
@@ -25,18 +29,22 @@ public class DoubanSpider extends Spider {
     }
 
     @Override
-    public Spider started() {
+    public Spider started(Config config) {
         this.requests.forEach(request -> {
             request.header("Refer", "https://movie.douban.com");
             request.cookie("bid", randomBid());
         });
-        this.addPipeline((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
+        config.delay(5000);
+//        this.addPipeline((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
         return this;
     }
 
     @Override
     public String parse(Response response) {
-        log.info("响应[{}]", response.body());
+        Document document = Jsoup.parse(response.body());
+        Elements elements   = document.select("#content table .pl2 a");
+        log.info("elements size: {}", elements.size());
+        elements.forEach(element -> log.info("Title [{}]", element.text()));
         return response.body();
     }
 

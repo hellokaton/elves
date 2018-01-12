@@ -4,8 +4,6 @@ import io.github.biezhi.elves.request.Request;
 import io.github.biezhi.elves.response.Response;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.TimeUnit;
-
 /**
  * @author biezhi
  * @date 2018/1/11
@@ -21,20 +19,29 @@ public class Downloader implements Runnable {
 
     @Override
     public void run() {
-        try {
-            log.info("开始下载: {}", request.getUrl());
-            TimeUnit.MILLISECONDS.sleep(1300);
-            log.info("下载完成: {}", request.getUrl());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        log.info("开始下载: {}", request.getUrl());
+
+        io.github.biezhi.request.Request httpReq = null;
+        if ("get".equalsIgnoreCase(request.method())) {
+            httpReq = io.github.biezhi.request.Request.get(request.getUrl());
         }
+        if ("post".equalsIgnoreCase(request.method())) {
+            httpReq = io.github.biezhi.request.Request.post(request.getUrl());
+        }
+
+        String body = httpReq.headers(request.getHeaders())
+                .connectTimeout(request.getSpider().getConfig().timeout())
+                .readTimeout(request.getSpider().getConfig().timeout())
+                .body();
+
+        log.info("下载完成: {}", request.getUrl());
+
         Response response = new Response(request);
-        response.body("Hello Elves. " + request.getUrl());
+        response.body(body);
+
         Object item = request.getSpider().parse(response);
         request.getSpider().getPipelines()
-                .forEach(pipeline -> {
-                    pipeline.process(item, request);
-                });
+                .forEach(pipeline -> pipeline.process(item, request));
 
     }
 

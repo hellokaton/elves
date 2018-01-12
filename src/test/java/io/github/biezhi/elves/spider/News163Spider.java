@@ -13,7 +13,7 @@ public class News163Spider extends Spider {
     }
 
     @Override
-    public void parse(Response response) {
-
+    public String parse(Response response) {
+        return "";
     }
 }

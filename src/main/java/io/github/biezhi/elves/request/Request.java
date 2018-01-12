@@ -1,8 +1,8 @@
 package io.github.biezhi.elves.request;
 
-import lombok.Data;
+import io.github.biezhi.elves.spider.Spider;
+import lombok.Getter;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -10,11 +10,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author biezhi
  * @date 2018/1/11
  */
-@Data
+@Getter
 public class Request {
 
+    private Spider spider;
+    private String url;
     private Map<String, String> headers = new ConcurrentHashMap<>();
     private Map<String, String> cookies = new ConcurrentHashMap<>();
+
+    public Request(Spider spider, String url) {
+        this.spider = spider;
+        this.url = url;
+    }
 
     public Request header(String key, String value) {
         this.headers.put(key, value);

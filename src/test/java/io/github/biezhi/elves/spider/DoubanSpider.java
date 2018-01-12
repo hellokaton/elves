@@ -1,5 +1,6 @@
 package io.github.biezhi.elves.spider;
 
+import io.github.biezhi.elves.pipeline.Pipeline;
 import io.github.biezhi.elves.response.Response;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,17 +25,19 @@ public class DoubanSpider extends Spider {
     }
 
     @Override
-    public Spider onStart() {
+    public Spider started() {
         this.requests.forEach(request -> {
             request.header("Refer", "https://movie.douban.com");
             request.cookie("bid", randomBid());
         });
+        this.addPipeline((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
         return this;
     }
 
     @Override
-    public void parse(Response response) {
+    public String parse(Response response) {
         log.info("响应[{}]", response.body());
+        return response.body();
     }
 
     private String randomBid() {
@@ -49,4 +52,3 @@ public class DoubanSpider extends Spider {
     }
 
 }
-

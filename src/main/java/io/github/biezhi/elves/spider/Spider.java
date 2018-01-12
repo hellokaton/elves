@@ -1,5 +1,6 @@
 package io.github.biezhi.elves.spider;
 
+import io.github.biezhi.elves.pipeline.Pipeline;
 import io.github.biezhi.elves.request.Request;
 import io.github.biezhi.elves.response.Response;
 import lombok.Data;
@@ -18,8 +19,9 @@ import java.util.List;
 public abstract class Spider {
 
     protected String name;
-    protected List<String> startUrls = new ArrayList<>();
-    protected List<Request> requests;
+    protected List<String>   startUrls = new ArrayList<>();
+    protected List<Pipeline> pipelines = new ArrayList<>();
+    protected List<Request>  requests  = new ArrayList<>();
 
     public Spider(String name) {
         this.name = name;
@@ -30,10 +32,15 @@ public abstract class Spider {
         return this;
     }
 
-    public Spider onStart(){
+    public Spider started() {
         return this;
     }
 
-    public abstract void parse(Response response);
+    public abstract <T> T parse(Response response);
+
+    public Spider addPipeline(Pipeline pipeline) {
+        this.pipelines.add(pipeline);
+        return this;
+    }
 
 }

@@ -14,4 +14,5 @@ public class DoubanExample {
         DoubanSpider doubanSpider = new DoubanSpider("豆瓣电影");
         Elves.me(doubanSpider, Config.me()).start();
     }
+
 }

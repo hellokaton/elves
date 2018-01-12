@@ -56,7 +56,7 @@ public class ElvesEngine {
             log.info("Spider [{}] 配置 [{}]", spider.getName(), conf);
             spider.setConfig(conf);
             spider.getStartUrls().stream()
-                    .map(url -> spider.makeRequest(url, spider::parse))
+                    .map(spider::makeRequest)
                     .forEach(request -> {
                         spider.getRequests().add(request);
                         scheduler.addRequest(request);

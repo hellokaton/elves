@@ -40,6 +40,11 @@ public abstract class Spider {
         return this;
     }
 
+    public <T> Request<T> makeRequest(String url) {
+        Request<T> request = new Request(this, url, this::parse);
+        return request;
+    }
+
     public <T> Request<T> makeRequest(String url, Parser<T> parser) {
         Request<T> request = new Request(this, url, parser);
         return request;

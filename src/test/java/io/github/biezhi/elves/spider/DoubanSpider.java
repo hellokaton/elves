@@ -33,16 +33,13 @@ public class DoubanSpider extends Spider {
 
     @Override
     public Spider started(Config config) {
-//        config.delay(5000);
 
         this.pipelines.add((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
 
         this.requests.forEach(request -> {
             request.header("Refer", "https://movie.douban.com");
             request.cookie("bid", randomBid());
-            request.setParser(this::parse);
         });
-//        this.addPipeline((item, request) -> item.forEach(s -> log.info("保存到文件: {}", s)));
         return this;
     }
 
@@ -53,13 +50,12 @@ public class DoubanSpider extends Spider {
         log.info("elements size: {}", elements.size());
 
         List<Request<String>> requests = elements.stream()
-                .map(element -> {
-                    Request<String> req = DoubanSpider.this.makeRequest(element.attr("href"), new DetailParser());
-                    return req;
-                })
+                .map(element -> element.attr("href"))
+                .map(href -> DoubanSpider.this.makeRequest(href, new DetailParser()))
                 .collect(Collectors.toList());
         result.addRequests(requests);
 
+        // 获取下一页 URL
         Elements nextEl = response.body().css("#content > div > div.article > div.paginator > span.next > a");
         if (null != nextEl && nextEl.size() > 0) {
             String          nextPageUrl = nextEl.get(0).attr("href");
@@ -79,6 +75,11 @@ public class DoubanSpider extends Spider {
         }
     }
 
+    /**
+     * 生成随机字符串
+     *
+     * @return
+     */
     private String randomBid() {
         String       base   = "abcdefghijklmnopqrstuvwxyz0123456789";
         Random       random = new Random();

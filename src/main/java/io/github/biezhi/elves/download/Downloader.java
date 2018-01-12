@@ -36,7 +36,7 @@ public class Downloader implements Runnable {
             httpReq = io.github.biezhi.request.Request.post(request.getUrl());
         }
 
-        InputStream result = httpReq.headers(request.getHeaders())
+        InputStream result = httpReq.contentType(request.contentType()).headers(request.getHeaders())
                 .connectTimeout(request.getSpider().getConfig().timeout())
                 .readTimeout(request.getSpider().getConfig().timeout())
                 .stream();

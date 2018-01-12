@@ -17,7 +17,7 @@ public class Response {
 
     public Response(Request request, InputStream inputStream) {
         this.request = request;
-        this.body = new Body(inputStream);
+        this.body = new Body(inputStream, request.charset());
     }
 
     public Body body() {

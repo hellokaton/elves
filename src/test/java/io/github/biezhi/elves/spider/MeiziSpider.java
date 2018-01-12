@@ -8,10 +8,14 @@ import io.github.biezhi.elves.request.Request;
 import io.github.biezhi.elves.response.Response;
 import io.github.biezhi.elves.response.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.File;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -48,6 +52,11 @@ public class MeiziSpider extends Spider {
 
             log.info("[{}] 图片下载 OJ8K.", request.getUrl());
         });
+
+        this.requests.forEach(request -> {
+            request.contentType("text/html; charset=gb2312");
+            request.charset(Charset.forName("GBK"));
+        });
     }
 
     @Override
@@ -63,9 +72,9 @@ public class MeiziSpider extends Spider {
         result.addRequests(requests);
 
         // 获取下一页 URL
-        Elements nextEl = response.body().css("#wp_page_numbers > ul > li:nth-child(17) > a");
-        if (null != nextEl && nextEl.size() > 0) {
-            String          nextPageUrl = "http://www.meizitu.com/a/" + nextEl.get(0).attr("href");
+        Optional<Element> nextEl = response.body().css("#wp_page_numbers > ul > li > a").stream().filter(element -> "下一页".equals(element.text())).findFirst();
+        if (nextEl.isPresent()) {
+            String          nextPageUrl = "http://www.meizitu.com/a/" + nextEl.get().attr("href");
             Request<String> nextReq     = MeiziSpider.this.makeRequest(nextPageUrl, this::parse);
             result.addRequest(nextReq);
         }

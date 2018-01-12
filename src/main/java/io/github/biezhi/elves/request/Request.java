@@ -3,6 +3,8 @@ package io.github.biezhi.elves.request;
 import io.github.biezhi.elves.spider.Spider;
 import lombok.Getter;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +22,8 @@ public class Request<T> {
     private String              method  = "GET";
     private Map<String, String> headers = new HashMap<>();
     private Map<String, String> cookies = new HashMap<>();
+    private String contentType = "text/html; charset=UTF-8";
+    private Charset charset = StandardCharsets.UTF_8;
     private Parser<T> parser;
 
     public Request(Spider spider, String url, Parser<T> parser) {
@@ -49,6 +53,24 @@ public class Request<T> {
 
     public void setParser(Parser<T> parser) {
         this.parser = parser;
+    }
+
+    public String contentType() {
+        return contentType;
+    }
+
+    public Request contentType(String contentType) {
+        this.contentType = contentType;
+        return this;
+    }
+
+    public Charset charset() {
+        return charset;
+    }
+
+    public Request charset(Charset charset) {
+        this.charset = charset;
+        return this;
     }
 
     public Request method(String method) {

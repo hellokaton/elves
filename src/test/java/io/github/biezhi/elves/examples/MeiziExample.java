@@ -14,7 +14,7 @@ public class MeiziExample {
 
     public static void main(String[] args) {
         MeiziSpider meiziSpider = new MeiziSpider("妹子图");
-        Elves.me(meiziSpider, Config.me()).start();
+        Elves.me(meiziSpider, Config.me().delay(3000)).start();
     }
 
 }

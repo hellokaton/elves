@@ -7,6 +7,7 @@ import us.codecraft.xsoup.Xsoup;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -18,7 +19,7 @@ public class Body {
     private final InputStream inputStream;
     private final String      bodyString;
 
-    public Body(InputStream inputStream) {
+    public Body(InputStream inputStream, Charset charset) {
         this.inputStream = inputStream;
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int                   nRead;
@@ -32,7 +33,7 @@ public class Body {
             e.printStackTrace();
         }
         byte[] byteArray = buffer.toByteArray();
-        this.bodyString = new String(byteArray, StandardCharsets.UTF_8);
+        this.bodyString = new String(byteArray, charset);
     }
 
     @Override

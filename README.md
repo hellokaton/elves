@@ -17,7 +17,7 @@
 ## 架构图
 
 <p align="center">
-    <img src"docs/static/elves.png" width="70%"/>
+    <img src="docs/static/elves.png" width="70%"/>
 </p>
 
 ## 快速上手

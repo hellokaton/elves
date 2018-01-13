@@ -21,6 +21,10 @@ public class DoubanSpider extends Spider {
 
     public DoubanSpider(String name) {
         super(name);
+    }
+
+    @Override
+    public void onStart(Config config) {
         this.startUrls(
                 "https://movie.douban.com/tag/爱情",
                 "https://movie.douban.com/tag/喜剧",
@@ -28,10 +32,6 @@ public class DoubanSpider extends Spider {
                 "https://movie.douban.com/tag/动作",
                 "https://movie.douban.com/tag/史诗",
                 "https://movie.douban.com/tag/犯罪");
-    }
-
-    @Override
-    public void onStart(Config config) {
         this.addPipeline((Pipeline<List<String>>) (item, request) -> log.info("保存到文件: {}", item));
     }
 

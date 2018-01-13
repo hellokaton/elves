@@ -35,9 +35,13 @@
 
 ```java
 public class DoubanSpider extends Spider {
-    
+
     public DoubanSpider(String name) {
         super(name);
+    }
+
+    @Override
+    public void onStart(Config config) {
         this.startUrls(
                 "https://movie.douban.com/tag/爱情",
                 "https://movie.douban.com/tag/喜剧",
@@ -45,50 +49,26 @@ public class DoubanSpider extends Spider {
                 "https://movie.douban.com/tag/动作",
                 "https://movie.douban.com/tag/史诗",
                 "https://movie.douban.com/tag/犯罪");
+        this.addPipeline((Pipeline<List<String>>) (item, request) -> log.info("保存到文件: {}", item));
     }
 
-    @Override
-    public void onStart(Config config) {
-        this.addPipeline((Pipeline<String>) (item, request) -> log.info("保存到文件: {}", item));
-        this.requests.forEach(this::resetRequest);
-    }
+    public Result parse(Response response) {
+        Result<List<String>> result   = new Result<>();
+        Elements             elements = response.body().css("#content table .pl2 a");
 
-    private Request resetRequest(Request request) {
-        request.header("Refer", "https://movie.douban.com");
-        request.cookie("bid", randomBid());
-        return request;
-    }
-
-    @Override
-    public Result<String> parse(Response response) {
-        Result<String> result   = new Result<>();
-        Elements       elements = response.body().css("#content table .pl2 a");
-        List<Request> requests = elements.stream()
-                .map(element -> element.attr("href"))
-                .map(href -> DoubanSpider.this.makeRequest(href, new DetailParser()))
-                .map(this::resetRequest)
-                .collect(Collectors.toList());
-        result.addRequests(requests);
+        List<String> titles = elements.stream().map(Element::text).collect(Collectors.toList());
+        result.setItem(titles);
 
         // 获取下一页 URL
         Elements nextEl = response.body().css("#content > div > div.article > div.paginator > span.next > a");
         if (null != nextEl && nextEl.size() > 0) {
-            String          nextPageUrl = nextEl.get(0).attr("href");
-            Request<String> nextReq     = DoubanSpider.this.makeRequest(nextPageUrl, this::parse);
+            String  nextPageUrl = nextEl.get(0).attr("href");
+            Request nextReq     = this.makeRequest(nextPageUrl, this::parse);
             result.addRequest(nextReq);
         }
         return result;
     }
 
-    static class DetailParser implements Parser<String> {
-        @Override
-        public Result<String> parse(Response response) {
-            Elements elements = response.body().css("h1 span[property='v:itemreviewed']");
-            String   text     = elements.get(0).text();
-            return new Result<>(text);
-        }
-    }
-    
 }
 
 public static void main(String[] args) {

@@ -2,6 +2,10 @@
 
 一个轻量级的爬虫框架设计与实现。
 
+![](https://img.shields.io/travis/biezhi/elves.svg)
+![](https://img.shields.io/maven-central/v/io.github.biezhi/elves.svg)
+![](https://img.shields.io/badge/license-MIT-FF0080.svg)
+
 ## 特性
 
 - 事件驱动
@@ -9,6 +13,12 @@
 - 多线程执行
 - `CSS` 选择器和 `XPath` 支持
 - 多数据源支持
+
+## 架构图
+
+<p class="center">
+    <img src"docs/static/elves.png" width="70%"/>
+</p>
 
 ## 快速上手
 

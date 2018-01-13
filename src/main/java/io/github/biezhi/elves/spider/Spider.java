@@ -13,6 +13,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * 爬虫基类
@@ -72,5 +73,13 @@ public abstract class Spider {
      * 解析 DOM
      */
     protected abstract <T> Result<T> parse(Response response);
+
+    protected void resetRequest(Consumer<Request> requestConsumer) {
+        this.resetRequest(this.requests, requestConsumer);
+    }
+
+    protected void resetRequest(List<Request> requests, Consumer<Request> requestConsumer) {
+        requests.forEach(requestConsumer::accept);
+    }
 
 }

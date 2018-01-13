@@ -16,9 +16,11 @@
 
 ## 架构图
 
-<p align="center">
-    <img src="docs/static/elves.png" width="60%"/>
-</p>
+<img src="docs/static/elves.png" width="60%"/>
+
+**调用流程图**
+
+<img src="docs/static/dispatch.png" width="90%"/>
 
 ## 快速上手
 

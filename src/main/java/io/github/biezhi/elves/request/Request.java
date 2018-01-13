@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Request
+ * Request 请求
  *
  * @author biezhi
  * @date 2018/1/11

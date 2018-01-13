@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 响应结果封装
+ * <p>
+ * 存储 Item 数据和新添加的 Request 列表
+ *
  * @author biezhi
  * @date 2018/1/12
  */
@@ -23,13 +27,13 @@ public class Result<T> {
         this.item = item;
     }
 
-    public Result addRequest(Request request){
+    public Result addRequest(Request request) {
         this.requests.add(request);
         return this;
     }
 
-    public Result addRequests(List<Request> requests){
-        if(!ElvesUtils.isEmpty(requests)){
+    public Result addRequests(List<Request> requests) {
+        if (!ElvesUtils.isEmpty(requests)) {
             this.requests.addAll(requests);
         }
         return this;

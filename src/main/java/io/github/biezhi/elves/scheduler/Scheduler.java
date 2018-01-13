@@ -9,6 +9,8 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
+ * 爬虫调度器
+ *
  * @author biezhi
  * @date 2018/1/12
  */
@@ -62,6 +64,10 @@ public class Scheduler {
 
     public void addRequests(List<Request> requests) {
         requests.forEach(this::addRequest);
+    }
+
+    public void clear() {
+        pending.clear();
     }
 
 }

@@ -34,7 +34,7 @@ public class ElvesEngine {
     private Scheduler       scheduler;
     private ExecutorService executorService;
 
-    public ElvesEngine(Elves elves) {
+    ElvesEngine(Elves elves) {
         this.scheduler = new Scheduler();
         this.spiders = elves.spiders;
         this.config = elves.config;
@@ -72,7 +72,17 @@ public class ElvesEngine {
         });
 
         // 后台生产
-        Thread downloadTread = new Thread(runDownload());
+        Thread downloadTread = new Thread(() -> {
+            while (isRunning) {
+                if (!scheduler.hasRequest()) {
+                    ElvesUtils.sleep(100);
+                    continue;
+                }
+                Request request = scheduler.nextRequest();
+                executorService.submit(new Downloader(scheduler, request));
+                ElvesUtils.sleep(request.getSpider().getConfig().delay());
+            }
+        });
         downloadTread.setDaemon(true);
         downloadTread.setName("download-thread");
         downloadTread.start();
@@ -102,18 +112,10 @@ public class ElvesEngine {
         }
     }
 
-    private Runnable runDownload() {
-        return () -> {
-            while (isRunning) {
-                if (!scheduler.hasRequest()) {
-                    ElvesUtils.sleep(100);
-                    continue;
-                }
-                Request request = scheduler.nextRequest();
-                executorService.submit(new Downloader(scheduler, request));
-                ElvesUtils.sleep(request.getSpider().getConfig().delay());
-            }
-        };
+    public void stop(){
+        isRunning = false;
+        scheduler.clear();
+        log.info("爬虫已经停止.");
     }
 
 }

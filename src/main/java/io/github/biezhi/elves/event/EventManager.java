@@ -13,14 +13,10 @@ import java.util.function.Consumer;
  */
 public class EventManager {
 
-    private static final Map<ElvesEvent, List<Consumer<Config>>> elvesEventConsumerMap = new LinkedHashMap<>();
-
-    public static List<Consumer<Config>> getEvent(ElvesEvent elvesEvent) {
-        return elvesEventConsumerMap.get(elvesEvent);
-    }
+    private static final Map<ElvesEvent, List<Consumer<Config>>> elvesEventConsumerMap = new HashMap<>();
 
     public static void registerEvent(ElvesEvent elvesEvent, Consumer<Config> consumer) {
-        List<Consumer<Config>> consumers = getEvent(elvesEvent);
+        List<Consumer<Config>> consumers = elvesEventConsumerMap.get(elvesEvent);
         if (null == consumers) {
             consumers = new ArrayList<>();
         }

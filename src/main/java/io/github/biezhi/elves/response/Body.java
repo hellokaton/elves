@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
+ * 响应Body
+ *
  * @author biezhi
  * @date 2018/1/12
  */

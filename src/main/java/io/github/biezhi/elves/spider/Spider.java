@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * 爬虫基类
+ *
  * @author biezhi
  * @date 2018/1/11
  */
@@ -43,13 +45,13 @@ public abstract class Spider {
 
     /**
      * 爬虫启动前执行
-     *
-     * @param config
-     * @return
      */
     public void onStart(Config config) {
     }
 
+    /**
+     * 添加 Pipeline 处理
+     */
     protected <T> Spider addPipeline(Pipeline<T> pipeline) {
         this.pipelines.add(pipeline);
         return this;
@@ -57,10 +59,6 @@ public abstract class Spider {
 
     /**
      * 构建一个Request
-     *
-     * @param url
-     * @param <T>
-     * @return
      */
     public <T> Request<T> makeRequest(String url) {
         return makeRequest(url, this::parse);
@@ -70,6 +68,9 @@ public abstract class Spider {
         return new Request(this, url, parser);
     }
 
+    /**
+     * 解析 DOM
+     */
     protected abstract <T> Result<T> parse(Response response);
 
 }

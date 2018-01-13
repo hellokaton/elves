@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.InputStream;
 
 /**
- * 豆瓣电影爬虫
+ * 下载器线程
  *
  * @author biezhi
  * @date 2018/1/11

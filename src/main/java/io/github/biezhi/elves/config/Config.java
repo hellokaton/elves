@@ -3,7 +3,7 @@ package io.github.biezhi.elves.config;
 import lombok.ToString;
 
 /**
- * 爬虫全局配置
+ * 爬虫配置
  *
  * @author biezhi
  * @date 2018/1/11

@@ -1,6 +1,6 @@
 # Elves
 
-一个轻量级的爬虫框架设计与实现。
+一个轻量级的爬虫框架设计与实现，[博文分析](https://blog.biezhi.me/2018/01/design-and-implement-a-crawler-framework.html)。
 
 ![](https://img.shields.io/travis/biezhi/elves.svg)
 ![](https://img.shields.io/maven-central/v/io.github.biezhi/elves.svg)
@@ -12,7 +12,6 @@
 - 易于定制
 - 多线程执行
 - `CSS` 选择器和 `XPath` 支持
-- 多数据源支持
 
 ## 架构图
 

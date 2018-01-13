@@ -16,7 +16,7 @@
 
 ## 架构图
 
-<p class="center">
+<p align="center">
     <img src"docs/static/elves.png" width="70%"/>
 </p>
 

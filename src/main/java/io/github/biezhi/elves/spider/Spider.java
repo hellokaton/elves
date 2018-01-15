@@ -30,10 +30,6 @@ public abstract class Spider {
     protected List<Pipeline> pipelines = new ArrayList<>();
     protected List<Request>  requests  = new ArrayList<>();
 
-    public Spider() {
-        this("未命名爬虫");
-    }
-
     public Spider(String name) {
         this.name = name;
         EventManager.registerEvent(ElvesEvent.SPIDER_STARTED, this::onStart);

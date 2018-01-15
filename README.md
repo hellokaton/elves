@@ -2,9 +2,9 @@
 
 一个轻量级的爬虫框架设计与实现，[博文分析](https://blog.biezhi.me/2018/01/design-and-implement-a-crawler-framework.html)。
 
-![](https://img.shields.io/travis/biezhi/elves.svg)
-![](https://img.shields.io/maven-central/v/io.github.biezhi/elves.svg)
-![](https://img.shields.io/badge/license-MIT-FF0080.svg)
+[![](https://img.shields.io/travis/biezhi/elves.svg)](https://travis-ci.org/biezhi/elves)
+[![](https://img.shields.io/maven-central/v/io.github.biezhi/elves.svg)](https://mvnrepository.com/artifact/io.github.biezhi/elves)
+[![](https://img.shields.io/badge/license-MIT-FF0080.svg)](https://github.com/biezhi/elves/blob/master/LICENSE)
 
 ## 特性
 
@@ -79,7 +79,7 @@ public static void main(String[] args) {
 ## 爬虫例子
 
 - [豆瓣电影](https://github.com/biezhi/elves/blob/master/src/test/java/io/github/biezhi/elves/examples/DoubanExample.java)
-- [网易新闻]()
+- [网易新闻](https://github.com/biezhi/elves/blob/master/src/test/java/io/github/biezhi/elves/examples/News163Example.java)
 - [糗事百科](https://github.com/biezhi/elves/blob/master/src/test/java/io/github/biezhi/elves/examples/QiubaiExample.java)
 - [妹。。。妹子图](https://github.com/biezhi/elves/blob/master/src/test/java/io/github/biezhi/elves/examples/MeiziExample.java)
 

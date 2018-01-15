@@ -80,7 +80,7 @@ public static void main(String[] args) {
 
 - [豆瓣电影](https://github.com/biezhi/elves/blob/master/src/test/java/io/github/biezhi/elves/examples/DoubanExample.java)
 - [网易新闻]()
-- [糗事百科]()
+- [糗事百科](https://github.com/biezhi/elves/blob/master/src/test/java/io/github/biezhi/elves/examples/QiubaiExample.java)
 - [妹。。。妹子图](https://github.com/biezhi/elves/blob/master/src/test/java/io/github/biezhi/elves/examples/MeiziExample.java)
 
 ## 开源协议

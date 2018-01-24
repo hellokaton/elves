@@ -6,7 +6,7 @@
 
     <groupId>io.github.biezhi</groupId>
     <artifactId>elves</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>elves</name>
     <url>https://biezhi.github.io/elves</url>
     <description>crawler framework</description>

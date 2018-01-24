@@ -15,6 +15,16 @@
 - 多线程执行
 - `CSS` 选择器和 `XPath` 支持
 
+**Maven** 坐标
+
+```xml
+<dependency>
+    <groupId>io.github.biezhi</groupId>
+    <artifactId>elves</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
+
 ## 架构图
 
 <img src="docs/static/elves.png" width="60%"/>

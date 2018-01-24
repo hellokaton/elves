@@ -25,6 +25,8 @@
 </dependency>
 ```
 
+如果你想在本地运行这个项目源码，请确保你是 `Java8` 环境并且安装了 [lombok](https://projectlombok.org/) 插件。
+
 ## 架构图
 
 <img src="docs/static/elves.png" width="60%"/>
